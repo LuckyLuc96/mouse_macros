@@ -1,5 +1,6 @@
 from pynput.mouse import Listener as MouseListener
 from pynput.keyboard import Listener as KeyboardListener
+from pynput.mouse import Button, Controller
 from pynput import keyboard
 import time
 
@@ -39,33 +40,32 @@ class Recorder:
         self.save_inputs_to_file()
 
 class Playback:
+    
     def __init__(self, file_path):
         self.file_path = file_path
     
-    def read_and_execute_coordinates(self):
-        extracted_coordinates = []
+    def extract_coordinates(self):
+        mouse = Controller()
         with open(self.file_path, "r") as file:
             contents = file.read().strip()
             contents = contents.replace(",", " ")
             contents = contents.split()
-            print(contents) 
-            coordinate = [int(num) for num in contents if num.isdigit()]
             
             for i in range(0, len(contents), 2):
                 if i + 1 < len(contents):
                     x = contents[i]
                     y = contents[i + 1]
                     if x.isdigit() and y.isdigit():
-                        extracted_coordinates.append([x, y])
-                
-            print(extracted_coordinates)
-            print(type(extracted_coordinates))
-                
-    
+                        mouse.position = (int(x), int(y))
+                        mouse.click(Button.left, 1)
+                        time.sleep(0.5)
+
+               
 class Manager:
     def __init__(self):
         self.recorder = Recorder()
         self.playback = Playback(file_path="saved_mouse_clicks.txt")
+        
     
     def process_manager(self):
         try:
@@ -77,7 +77,7 @@ class Manager:
         if get_step == 1:
             self.recorder.start_recording()
         elif get_step == 2:
-            self.playback.read_and_execute_coordinates()
+            self.playback.extract_coordinates()
         else:
             print("Please input the numbers 1 or 2. To record a series of mouse clicks, press 1. \n To play the recorded mouse clicks, press 2.")
 
