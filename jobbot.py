@@ -69,17 +69,22 @@ class Manager:
     
     def process_manager(self):
         try:
-            get_step = int(input("Are you 1) recording or 2) playing the recording? \n"))
+            get_step = int(input("1) Record Mouse Clicks \n2) Play Recorded Mouse Clicks \n0) Exit\n"))
         except Exception as e:
             print("There has been an error. See: ", e)
             return
         
         if get_step == 1:
+            print("Mouse click recording has started! Press the Escape key to stop.")
             self.recorder.start_recording()
+            print("The recording has been saved to saved_mouse_clicks.txt\nTo play this recording, restart this program and select","2.")
+
         elif get_step == 2:
             self.playback.extract_coordinates()
+        elif get_step == 0:
+            quit()
         else:
-            print("Please input the numbers 1 or 2. To record a series of mouse clicks, press 1. \n To play the recorded mouse clicks, press 2.")
+            print("Please input the numbers 1 or 2. To record a series of mouse clicks, press 1. \nTo play the recorded mouse clicks, press 2.")
 
 def main():
     manager = Manager()
